@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피카츄 배구</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>피카츄 배구</h1>
+            <div class="score-board">
+                <div class="score">
+                    <span class="player-name">Player 1</span>
+                    <span class="player-score" id="player1-score">0</span>
+                </div>
+                <div class="score">
+                    <span class="player-name">Player 2</span>
+                    <span class="player-score" id="player2-score">0</span>
+                </div>
+            </div>
+        </header>
+        
+        <canvas id="game-canvas" width="800" height="400"></canvas>
+        
+        <div class="controls">
+            <div class="control-group">
+                <h3>Player 1 Controls</h3>
+                <p>A/D: 이동, W: 점프</p>
+            </div>
+            <div class="control-group">
+                <h3>Player 2 Controls</h3>
+                <p>←/→: 이동, ↑: 점프</p>
+            </div>
+        </div>
+        
+        <button id="start-game" class="start-button">게임 시작</button>
+        <button id="reset-game" class="reset-button">리셋</button>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>

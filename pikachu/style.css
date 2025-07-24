@@ -118,3 +118,60 @@ body {
     background: linear-gradient(45deg, #FF6B6B, #FF8E53);
     color: white;
 }
+
+.character-selection {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.character-selection h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.players-selection {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.player-selection {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.player-selection h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.character-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.character-btn {
+    background: linear-gradient(45deg, #87CEEB, #98FB98);
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.character-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.character-btn.selected {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+}

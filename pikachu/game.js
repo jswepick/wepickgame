@@ -12,9 +12,20 @@ class PikachuVolleyball {
         this.friction = 0.85;
         this.bounceDecay = 0.95;
         
+        this.selectedCharacters = {
+            player1: 'pikachu',
+            player2: 'pikachu'
+        };
+        
+        this.characters = {
+            pikachu: { color: '#FFD700', eyeColor: '#000', cheekColor: '#FF69B4', earColor: '#FF0000' },
+            raichu: { color: '#FFA500', eyeColor: '#000', cheekColor: '#FF1493', earColor: '#8B4513' },
+            squirtle: { color: '#87CEEB', eyeColor: '#000', cheekColor: '#FFB6C1', earColor: '#4169E1' }
+        };
+        
         this.initializeGame();
         this.bindEvents();
-        this.drawInitialState();
+        this.setupCharacterSelection();
     }
     
     initializeGame() {
@@ -27,6 +38,9 @@ class PikachuVolleyball {
             velocityY: 0,
             onGround: false,
             color: '#FFD700',
+            eyeColor: '#000',
+            cheekColor: '#FF69B4',
+            earColor: '#FF0000',
             speed: 5,
             jumpPower: 15
         };
@@ -40,6 +54,9 @@ class PikachuVolleyball {
             velocityY: 0,
             onGround: false,
             color: '#FF6B6B',
+            eyeColor: '#000',
+            cheekColor: '#FF69B4',
+            earColor: '#FF0000',
             speed: 5,
             jumpPower: 15
         };
@@ -80,6 +97,121 @@ class PikachuVolleyball {
         
         document.getElementById('reset-game').addEventListener('click', () => {
             this.resetGame();
+        });
+        
+        document.getElementById('back-to-selection').addEventListener('click', () => {
+            this.showCharacterSelection();
+        });
+    }
+    
+    setupCharacterSelection() {
+        const characterBtns = document.querySelectorAll('.character-btn');
+        characterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const player = e.target.dataset.player;
+                const character = e.target.dataset.character;
+                
+                // Remove selected class from other buttons for this player
+                document.querySelectorAll(`[data-player="${player}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked button
+                e.target.classList.add('selected');
+                
+                // Store selection
+                this.selectedCharacters[`player${player}`] = character;
+            });
+        });
+        
+        document.getElementById('start-selection').addEventListener('click', () => {
+            this.showGameArea();
+            this.updatePlayerAppearances();
+            this.drawInitialState();
+        });
+    }
+    
+    showCharacterSelection() {
+        document.getElementById('character-selection').style.display = 'block';
+        document.getElementById('game-area').style.display = 'none';
+        this.gameRunning = false;
+    }
+    
+    showGameArea() {
+        document.getElementById('character-selection').style.display = 'none';
+        document.getElementById('game-area').style.display = 'block';
+    }
+    
+    updatePlayerAppearances() {
+        const char1 = this.characters[this.selectedCharacters.player1];
+        const char2 = this.characters[this.selectedCharacters.player2];
+        
+        this.player1.color = char1.color;
+        this.player1.eyeColor = char1.eyeColor;
+        this.player1.cheekColor = char1.cheekColor;
+        this.player1.earColor = char1.earColor;
+        this.player1.useImage = char1.useImage;
+        this.player1.image = char1.image;
+        
+        this.player2.color = char2.color;
+        this.player2.eyeColor = char2.eyeColor;
+        this.player2.cheekColor = char2.cheekColor;
+        this.player2.earColor = char2.earColor;
+        this.player2.useImage = char2.useImage;
+        this.player2.image = char2.image;
+    }
+    
+    addCustomCharacter(name, imagePath) {
+        const img = new Image();
+        img.onload = () => {
+            this.characters[name] = {
+                color: '#FFD700',
+                eyeColor: '#000', 
+                cheekColor: '#FF69B4', 
+                earColor: '#FF0000',
+                useImage: true,
+                image: img
+            };
+            
+            // Add button to character selection
+            this.addCharacterButton(name);
+        };
+        img.src = imagePath;
+    }
+    
+    addCharacterButton(characterName) {
+        const player1Options = document.querySelector('.player-selection:first-child .character-options');
+        const player2Options = document.querySelector('.player-selection:last-child .character-options');
+        
+        // Add button for player 1
+        const btn1 = document.createElement('button');
+        btn1.className = 'character-btn';
+        btn1.dataset.player = '1';
+        btn1.dataset.character = characterName;
+        btn1.textContent = characterName;
+        player1Options.appendChild(btn1);
+        
+        // Add button for player 2
+        const btn2 = document.createElement('button');
+        btn2.className = 'character-btn';
+        btn2.dataset.player = '2';
+        btn2.dataset.character = characterName;
+        btn2.textContent = characterName;
+        player2Options.appendChild(btn2);
+        
+        // Add event listeners
+        [btn1, btn2].forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const player = e.target.dataset.player;
+                const character = e.target.dataset.character;
+                
+                document.querySelectorAll(`[data-player="${player}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+                
+                e.target.classList.add('selected');
+                this.selectedCharacters[`player${player}`] = character;
+            });
         });
     }
     
@@ -321,19 +453,29 @@ class PikachuVolleyball {
     }
     
     drawPlayer(player) {
-        this.ctx.fillStyle = player.color;
-        this.ctx.fillRect(player.x, player.y, player.width, player.height);
-        
-        this.ctx.fillStyle = '#000';
-        this.ctx.fillRect(player.x + 15, player.y + 15, 8, 8);
-        this.ctx.fillRect(player.x + 37, player.y + 15, 8, 8);
-        
-        this.ctx.fillStyle = '#FF69B4';
-        this.ctx.fillRect(player.x + 20, player.y + 35, 20, 5);
-        
-        this.ctx.fillStyle = '#FF0000';
-        this.ctx.fillRect(player.x + 10, player.y + 5, 15, 8);
-        this.ctx.fillRect(player.x + 35, player.y + 5, 15, 8);
+        if (player.useImage && player.image && player.image.complete) {
+            // Draw custom image
+            this.ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
+        } else {
+            // Draw default rectangle character
+            // Body
+            this.ctx.fillStyle = player.color;
+            this.ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Eyes
+            this.ctx.fillStyle = player.eyeColor;
+            this.ctx.fillRect(player.x + 15, player.y + 15, 8, 8);
+            this.ctx.fillRect(player.x + 37, player.y + 15, 8, 8);
+            
+            // Cheeks
+            this.ctx.fillStyle = player.cheekColor;
+            this.ctx.fillRect(player.x + 20, player.y + 35, 20, 5);
+            
+            // Ears
+            this.ctx.fillStyle = player.earColor;
+            this.ctx.fillRect(player.x + 10, player.y + 5, 15, 8);
+            this.ctx.fillRect(player.x + 35, player.y + 5, 15, 8);
+        }
     }
     
     drawBall() {
@@ -360,5 +502,9 @@ class PikachuVolleyball {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new PikachuVolleyball();
+    const game = new PikachuVolleyball();
+    
+    // 커스텀 캐릭터 추가
+    game.addCustomCharacter('서', 'seo.png');
+    game.addCustomCharacter('고', 'go.png');
 });
